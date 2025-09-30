@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/julcilea/pgats-automacao-web#readme",
   "devDependencies": {
-    "cypress": "^13.7.3"
+    "cypress": "^13.7.3",
+    "cypress-xpath": "^2.0.1"
   }
 }
