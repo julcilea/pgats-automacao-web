@@ -1,5 +1,22 @@
 {
-  "name": "Using fixtures to represent data",
-  "email": "hello@cypress.io",
-  "body": "Fixtures are a great way to mock data for responses to routes"
+  "signupUser": {
+    "name": "QA Tester",
+    "email": "qa.tester@example.com",
+    "password": "teste123",
+    "firstName": "QA",
+    "lastName": "Tester",
+    "company": "Teste Company",
+    "address": "Rua Teste, 123",
+    "country": "Canada",
+    "state": "Ontario",
+    "city": "Toronto",
+    "zipcode": "A1B 2C3",
+    "mobileNumber": "+1 234 567 8901"
+  },
+  "contactForm": {
+    "name": "QA Tester Contato",
+    "email": "qa.contact@example.com",
+    "subject": "Teste de Formulário de Contato com Upload",
+    "message": "Esta é uma mensagem de teste para validar o formulário de contato da aplicação Automation Exercise. Teste automatizado com Cypress incluindo upload de arquivo."
+  }
 }
