@@ -3,15 +3,15 @@
 import LoginPage from '../support/pages/LoginPage'
 import SignupPage from '../support/pages/SignupPage'
 import HomePage from '../support/pages/HomePage'
-import { getRandomEmail } from '../support/helpers'
+import { getFakeName, getFakeEmail, getFakePassword } from '../support/helpers'
 
 describe('Automation exercise', () => {
 
     const generateTestUser = () => {
         return {
-            name: 'QA Tester',
-            email: getRandomEmail(),
-            password: 'teste123'
+            name: getFakeName(),
+            email: getFakeEmail(),
+            password: getFakePassword()
         }
     }
 

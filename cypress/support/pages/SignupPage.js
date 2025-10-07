@@ -1,25 +1,27 @@
+import { faker } from '@faker-js/faker';
+
 class SignupPage {
     fillAccountDetails(user) {
         cy.get('input[type="radio"]').check('Mrs')
         cy.get('input[data-qa="password"]').type(user.password, { log: false })
 
-        cy.get('select[data-qa="days"]').select('21')
-        cy.get('select[data-qa="months"]').select('November')
-        cy.get('select[data-qa="years"]').select('1979')
+        cy.get('select[data-qa="days"]').select(faker.number.int({ min: 1, max: 28 }).toString())
+        cy.get('select[data-qa="months"]').select(faker.date.month())
+        cy.get('select[data-qa="years"]').select(faker.number.int({ min: 1950, max: 2000 }).toString())
 
         cy.get('input[type=checkbox]#newsletter').check()
         cy.get('input[type=checkbox]#optin').check()
 
-        cy.get('input#first_name').type('QA')
-        cy.get('input#last_name').type('Tester')
-        cy.get('input#company').type('Teste Company')
-        cy.get('input#address1').type('Rua Teste, 123')
-        cy.get('input#address2').type('Bairro Teste')
+        cy.get('input#first_name').type(faker.person.firstName())
+        cy.get('input#last_name').type(faker.person.lastName())
+        cy.get('input#company').type(faker.company.name())
+        cy.get('input#address1').type(faker.location.streetAddress())
+        cy.get('input#address2').type(faker.location.secondaryAddress())
         cy.get('select#country').select('Canada')
-        cy.get('input#state').type('State Teste')
-        cy.get('input#city').type('City Teste')
-        cy.get('input#zipcode').type('12345')
-        cy.get('input#mobile_number').type('+5511999999999')
+        cy.get('input#state').type(faker.location.state())
+        cy.get('input#city').type(faker.location.city())
+        cy.get('input#zipcode').type(faker.location.zipCode('#####'))
+        cy.get('input#mobile_number').type(faker.phone.number('+55###########'))
     }
 
     submitForm() {
