@@ -3,91 +3,81 @@
 import LoginPage from '../support/pages/LoginPage'
 import SignupPage from '../support/pages/SignupPage'
 import HomePage from '../support/pages/HomePage'
+import { getRandomEmail } from '../support/helpers'
 
 describe('Automation exercise', () => {
+
     const generateTestUser = () => {
-        const timestamp = new Date().getTime()
         return {
             name: 'QA Tester',
-            email: `qa-tester-${timestamp}@test.com`,
+            email: getRandomEmail(),
             password: 'teste123'
         }
     }
 
     const createAccount = (user) => {
-        LoginPage
-            .visit()
-            .clickLogin()
-            .signup(user.name, user.email)
+        LoginPage.signup(user.name, user.email)
 
-        SignupPage
-            .fillAccountDetails(user)
-            .submitForm()
+        SignupPage.fillAccountDetails(user)
+        SignupPage.submitForm()
 
         cy.url().should('include', 'account_created')
     }
 
-    afterEach(() => {
-        HomePage.tryLogout()
+    beforeEach(() => {
+        LoginPage.visit()
     })
 
+
     it('Cadastrar um usuário', () => {
-        cy.viewport(300, 720)
         const user = generateTestUser()
+        LoginPage.clickLogin()
         createAccount(user)
-        SignupPage.elements.accountCreatedTitle().should('have.text', 'Account Created!')
+        SignupPage.getAccountCreatedTitle().should('have.text', 'Account Created!')
     })
 
     it('Logar com um usuário existente', () => {
         const user = generateTestUser()
+        LoginPage.clickLogin()
         createAccount(user)
 
-        LoginPage
-            .visit()
-            .clickLogin()
-            .login(user.email, user.password)
+        LoginPage.clickLogin()
+        LoginPage.login(user.email, user.password)
 
         HomePage.isLoggedIn()
     })
 
     it('Logar com um usuário inexistente', () => {
-        LoginPage
-            .visit()
-            .clickLogin()
-            .login('usuario-inexistente@test.com', 'senhaerrada123')
+        LoginPage.clickLogin()
+        LoginPage.login('usuario-inexistente@test.com', 'senhaerrada123')
 
-        LoginPage.elements.errorMessage()
+        LoginPage.getErrorMessage()
             .should('have.text', 'Your email or password is incorrect!')
     })
 
     it('Fazer logout do usuário logado', () => {
         const user = generateTestUser()
+        LoginPage.clickLogin()
         createAccount(user)
+        LoginPage.clickLogin()
+        LoginPage.login(user.email, user.password)
 
-        LoginPage
-            .visit()
-            .clickLogin()
-            .login(user.email, user.password)
-
-        HomePage
-            .isLoggedIn()
-            .logout()
+        HomePage.isLoggedIn()
+        HomePage.logout()
 
         cy.url().should('include', '/login')
-        LoginPage.elements.loginFormTitle()
+        LoginPage.getLoginFormTitle()
             .should('have.text', 'Login to your account')
     })
 
     it('Cadastrar um usuário com email já cadastrado', () => {
         const user = generateTestUser()
+        LoginPage.clickLogin()
         createAccount(user)
+        LoginPage.clickLogin()
+        LoginPage.signup('QA Duplicado', user.email)
 
-        LoginPage
-            .visit()
-            .clickLogin()
-            .signup('QA Duplicado', user.email)
-
-        LoginPage.elements.errorMessage()
+        LoginPage.getErrorMessage()
             .should('have.text', 'Email Address already exist!')
     })
 

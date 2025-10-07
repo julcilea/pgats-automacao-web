@@ -1,11 +1,22 @@
 /// <reference types="cypress" />
 
 import ContactPage from '../support/pages/ContactPage'
+import LoginPage from '../support/pages/LoginPage'
+import { getRandomEmail } from '../support/helpers'
 
 describe('Contact Form Tests', () => {
+    const user = {
+        email: getRandomEmail(),
+        password: 'teste123',
+        name: 'QA Tester'
+    }
+
     beforeEach(() => {
-        // Reset application state before each test
-        cy.visit('https://automationexercise.com')
+        // Login before each test
+        LoginPage
+            .visit()
+            .clickLogin()
+            .login(user.email, user.password)
     })
 
     it('Should submit contact form with file upload', () => {
@@ -21,11 +32,10 @@ describe('Contact Form Tests', () => {
         cy.writeFile('cypress/fixtures/test-file.txt', 'This is a test file for upload')
 
         ContactPage
-            .visit()
             .clickContact()
             .fillContactForm(
-                contactData.name,
-                contactData.email,
+                user.name,
+                user.email,
                 contactData.subject,
                 contactData.message
             )
@@ -33,7 +43,7 @@ describe('Contact Form Tests', () => {
             .submit()
 
         // Verify success message
-        ContactPage.elements.successMessage()
+        ContactPage.getSuccessMessage()
             .should('be.visible')
             .and('contain', 'Success! Your details have been submitted successfully.')
     })

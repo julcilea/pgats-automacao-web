@@ -1,42 +1,31 @@
 class ContactPage {
-    elements = {
-        contactLink: () => cy.get('a[href="/contact_us"]'),
-        nameInput: () => cy.get('input[data-qa="name"]'),
-        emailInput: () => cy.get('input[data-qa="email"]'),
-        subjectInput: () => cy.get('input[data-qa="subject"]'),
-        messageInput: () => cy.get('textarea[data-qa="message"]'),
-        uploadInput: () => cy.get('input[name="upload_file"]'),
-        submitButton: () => cy.get('input[data-qa="submit-button"]'),
-        successMessage: () => cy.get('.status.alert.alert-success')
-    }
-
     visit() {
         cy.visit('https://automationexercise.com')
-        return this
     }
 
     clickContact() {
-        this.elements.contactLink().click()
-        return this
+        cy.get('a[href="/contact_us"]', { timeout: 10000 }).click()
     }
 
     fillContactForm(name, email, subject, message) {
-        this.elements.nameInput().type(name)
-        this.elements.emailInput().type(email)
-        this.elements.subjectInput().type(subject)
-        this.elements.messageInput().type(message)
-        return this
+        // Aguardar formulário estar visível antes de preencher
+        cy.get('input[data-qa="name"]').should('be.visible').type(name)
+        cy.get('input[data-qa="email"]').should('be.visible').type(email)
+        cy.get('input[data-qa="subject"]').should('be.visible').type(subject)
+        cy.get('textarea[data-qa="message"]').should('be.visible').type(message)
     }
 
     uploadFile(filePath) {
-        this.elements.uploadInput().selectFile(filePath)
-        return this
+        cy.get('input[name="upload_file"]').selectFile(filePath)
     }
 
     submit() {
-        this.elements.submitButton().click()
+        cy.get('input[data-qa="submit-button"]').click()
         cy.on('window:confirm', () => true) // Handle the alert
-        return this
+    }
+
+    getSuccessMessage() {
+        return cy.get('.status.alert.alert-success')
     }
 }
 

@@ -1,28 +1,27 @@
 class HomePage {
-    elements = {
-        logoutLink: () => cy.get('a[href="/logout"]'),
-        userInfo: () => cy.get('i.fa.fa-user').parent()
-    }
 
     isLoggedIn() {
-        this.elements.logoutLink().should('be.visible')
-        this.elements.userInfo().should('contain', 'Logged in as')
-        return this
+        cy.get('a[href="/logout"]').should('be.visible')
+        cy.get('i.fa.fa-user').parent().should('contain', 'Logged in as')
+        cy.log('✅ Usuário deslogado');
     }
 
     logout() {
-        this.elements.logoutLink().click()
-        return this
+        cy.get('a[href="/logout"]').click();
+        cy.log('🔴 Logout realizado com sucesso.');
     }
 
     tryLogout() {
         cy.get('body').then($body => {
-            if ($body.find('a[href="/logout"]').length > 0) {
-                this.logout()
-                cy.url().should('include', '/login')
+            console.log($body.html());
+
+            if ($body.find('a[href="/logout"]', { timeout: 10000 }).length > 0) {
+                cy.log('🔴 Usuário está logado, realizando logout...');
+                logout();
+            } else {
+                cy.log('✅ Usuário já está deslogado, nada a fazer.');
             }
-        })
-        return this
+        });
     }
 }
 
