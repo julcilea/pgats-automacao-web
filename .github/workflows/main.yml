@@ -43,8 +43,25 @@ jobs:
         overwrite: false
         include-hidden-files: false
 
-    - name: Publish in GitHub Pages
+    - name: Prepare HTML Report
+      if: always()
+      run: |
+        if [ -d "cypress/reports" ]; then
+          cd cypress/reports
+          zip -r report.zip .
+          echo '<p style="text-align:center;margin-top:20px;">
+          <a href="report.zip" download style="background:#0078D4;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;">⬇️ Baixar Relatório Completo</a>
+          </p>' >> index.html
+        fi
+
+    - name: Deploy to GitHub Pages
+      if: always()
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./cypress/reports
+        enable_jekyll: false
+        keep_files: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: 'docs: update test reports'
