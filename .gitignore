@@ -3,6 +3,7 @@ cypress/videos/
 cypress/screenshots/
 cypress/downloads/
 cypress/results/
+cypress/reports/
 cypress/e2e/1-getting-started/*
 cypress/e2e/2-advanced-examples/*
 
@@ -22,3 +23,20 @@ yarn-error.log
 # OS
 .DS_Store
 Thumbs.db
+
+# Environment variables
+.env
+.env.test
+.env.production
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp

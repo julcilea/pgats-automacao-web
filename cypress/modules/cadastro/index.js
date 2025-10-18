@@ -2,7 +2,9 @@ import { faker } from '@faker-js/faker';
 
 class SignupPage {
     fillAccountDetails(user) {
-        cy.get('input[type="radio"]').check('Mrs')
+        // Wait for the form to be visible
+        cy.get('form[action="/signup"]', { timeout: 10000 }).should('be.visible')
+        cy.get('input[type="radio"][value="Mrs"]', { timeout: 10000 }).check()
         cy.get('input[data-qa="password"]').type(user.password, { log: false })
 
         cy.get('select[data-qa="days"]').select(faker.number.int({ min: 1, max: 28 }).toString())

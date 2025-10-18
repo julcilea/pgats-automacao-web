@@ -2,23 +2,33 @@ class LoginPage {
     // Ações da página
     visit() {
         cy.visit('https://automationexercise.com/', { timeout: 30000 })
-        cy.viewport(300, 720)
+        cy.viewport(1280, 720)
     }
 
     clickLogin() {
+        // Close any open modals first
         cy.get('body').then($body => {
-            console.log($body.html());
-            if ($body.find('a[href="/login"]', { timeout: 10000 }).length > 0) {
-                cy.log('✅ Usuário não está logado')
-                cy.get('a[href="/login"]').click()
+            if ($body.find('#checkoutModal').length > 0) {
+                // Wait for modal animation to complete
+                cy.wait(1000);
+                cy.get('#checkoutModal a[href="/login"]').click({ force: true });
+            } else {
+                cy.get('a[href="/login"]').first().click({ force: true });
             }
         });
 
         cy.get('body').then($body => {
-            if ($body.find('a[href="/logout"]', { timeout: 10000 }).length > 0) {
+            if ($body.find('a[href="/login"]').length > 0) {
+                cy.log('✅ Usuário não está logado')
+                cy.get('a[href="/login"]').first().click({ force: true })
+            }
+        });
+
+        cy.get('body').then($body => {
+            if ($body.find('a[href="/logout"]').length > 0) {
                 cy.log('🔴 Usuário está logado');
-                cy.get('a[href="/logout"]', { timeout: 10000 }).should('be.visible').click()
-                cy.get('a[href="/login"]', { timeout: 10000 }).should('be.visible').click()
+                cy.get('a[href="/logout"]').first().should('be.visible').click()
+                cy.get('a[href="/login"]').first().should('be.visible').click()
             }
         });
     }
