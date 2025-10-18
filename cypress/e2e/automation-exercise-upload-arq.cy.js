@@ -1,22 +1,20 @@
 /// <reference types="cypress" />
 
-import ContactPage from '../support/pages/ContactPage'
-import LoginPage from '../support/pages/LoginPage'
-import { getRandomEmail } from '../support/helpers'
+import ContactPage from '../modules/contato'
+import LoginPage from '../modules/login'
+import { getFakeEmail } from '../support/helpers'
 
 describe('Contact Form Tests', () => {
     const user = {
-        email: getRandomEmail(),
+        email: getFakeEmail(),
         password: 'teste123',
         name: 'QA Tester'
     }
 
     beforeEach(() => {
-        // Login before each test
-        LoginPage
-            .visit()
-            .clickLogin()
-            .login(user.email, user.password)
+        LoginPage.visit()
+        LoginPage.clickLogin()
+        LoginPage.login(user.email, user.password)
     })
 
     it('Should submit contact form with file upload', () => {
@@ -31,19 +29,21 @@ describe('Contact Form Tests', () => {
         // Create a test file to upload
         cy.writeFile('cypress/fixtures/test-file.txt', 'This is a test file for upload')
 
-        ContactPage
-            .clickContact()
-            .fillContactForm(
-                user.name,
-                user.email,
-                contactData.subject,
-                contactData.message
-            )
-            .uploadFile('cypress/fixtures/test-file.txt')
-            .submit()
+        // Navigate to contact page
+        ContactPage.clickContact()
+
+        // Fill and submit form
+        ContactPage.fillContactForm(
+            user.name,
+            user.email,
+            contactData.subject,
+            contactData.message
+        )
+        ContactPage.uploadFile('cypress/fixtures/test-file.txt')
+        ContactPage.submitForm()
 
         // Verify success message
-        ContactPage.getSuccessMessage()
+        cy.get('.alert-success')
             .should('be.visible')
             .and('contain', 'Success! Your details have been submitted successfully.')
     })
