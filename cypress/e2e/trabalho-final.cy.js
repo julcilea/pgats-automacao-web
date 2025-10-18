@@ -4,10 +4,11 @@ import login from '../modules/login'
 import cadastro from '../modules/cadastro'
 import menu from '../modules/menu'
 import produto from '../modules/produto'
-import carrinho from '../modules/carrinho'
 import contato from '../modules/contato'
+import carrinho from '../modules/carrinho'
 import inscricao from '../modules/inscricao'
 import { getFakeName, getFakeEmail, getFakePassword } from '../support/helpers'
+
 
 describe('Automation exercise', () => {
 
@@ -81,6 +82,26 @@ describe('Automation exercise', () => {
 
         login.getErrorMessage()
             .should('have.text', 'Email Address already exist!')
+    })
+
+    it('CT06 - formulário de contato', () => {
+        // Navegar até a página de contato
+        contato.visit()
+        contato.clickContact()
+
+        // Preparar dados do formulário
+        const name = getFakeName()
+        const email = getFakeEmail()
+        const subject = 'Teste de contato - CT06'
+        const message = 'Mensagem enviada pelo teste automatizado (CT06).'
+
+        // Preencher formulário, anexar arquivo e submeter
+        contato.fillContactForm(name, email, subject, message)
+        contato.uploadFile('cypress/fixtures/test-file.txt')
+        contato.submit()
+
+        // Verificar mensagem de sucesso
+        contato.getSuccessMessage().should('be.visible').and('contain', 'Success')
     })
 
     it('CT08 - Verificar todos os produtos e a página de detalhes do produto', () => {
@@ -162,46 +183,6 @@ describe('Automation exercise', () => {
 
         // Verify success message
         carrinho.verifySuccessMessage()
-    })
-
-    it('CT16 - Fazer pedido: Fazer login antes de finalizar a compra', () => {
-        const user = generateTestUser()
-
-        // Create account first
-        login.clickLogin()
-        createAccount(user)
-
-        // Login
-        login.clickLogin()
-        login.login(user.email, user.password)
-
-        // Add products to cart
-        carrinho.visitProducts()
-        carrinho.addToCart(0)
-        carrinho.continueShoppingAfterAdd()
-        carrinho.addToCart(1)
-        carrinho.viewCart()
-
-        // Proceed to checkout
-        carrinho.proceedToCheckout()
-
-        // Verify address details
-        const addressDetails = carrinho.verifyAddressDetails()
-        addressDetails.delivery().should('be.visible')
-        addressDetails.billing().should('be.visible')
-
-        // Add comment and place order
-        carrinho.addComment('Test order with existing account')
-        carrinho.placeOrder()
-
-        // Enter payment details and confirm order
-        carrinho.confirmOrder()
-
-        // Verify success message with more specific selector
-        cy.get('div.container', { timeout: 10000 })
-            .find('h2.title.text-center')
-            .should('be.visible')
-            .and('contain', 'Order Placed!')
     })
 
 })

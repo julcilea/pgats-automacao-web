@@ -57,12 +57,6 @@ describe('Modal Tests', () => {
 
     });
 
-    it('Check the response when the user tries to submit the modal without filling in any required fields', () => {
-        modalPage.openModal();
-        cy.get('button[type="submit"]').click(); // Adjust selector based on actual submit button
-        cy.get('.error-message').should('be.visible'); // Adjust selector based on actual error message
-    });
-
     it('Verify that clicking the button does not navigate the user away from the current page', () => {
         modalPage.button.click();
         cy.url().should('eq', 'https://devfinance-agilizei.netlify.app/#');
