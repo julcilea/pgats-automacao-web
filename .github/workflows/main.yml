@@ -9,6 +9,9 @@ on:
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: write
     
     steps:
     - name: Checkout
@@ -21,7 +24,8 @@ jobs:
       run: npm install
 
     - name: E2E Tests run
-      run: npx cypress run
+      run: npx cypress run --reporter mochawesome --reporter-options "reportDir=cypress/reports,overwrite=false,html=true,json=true"
+      continue-on-error: true
 
     - name: Generate E2E Test Report
       uses: actions/upload-artifact@v4
@@ -32,3 +36,11 @@ jobs:
           cypress/videos
           cypress/screenshots
           cypress/reports
+
+    - name: Publish Test Results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Cypress Tests
+        path: cypress/reports/mochawesome.json
+        reporter: mocha-json
