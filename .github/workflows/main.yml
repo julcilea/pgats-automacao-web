@@ -23,14 +23,21 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Create reports directory
+      run: |
+        mkdir -p cypress/reports
+        mkdir -p cypress/screenshots
+        mkdir -p cypress/videos
+
     - name: E2E Tests run
       run: npx cypress run --spec "cypress/e2e/drag-and-drop-and-windows.cy.js"
       continue-on-error: true
 
-    - name: Generate report files
+    - name: Generate report Mochawesome
       run: |
-        npm run generate-report
-        npm run zip-report
+        npx cypress-mochawesome-reporter --reportDir cypress/reports/html
+        cd cypress/reports/html
+        zip -r report.zip .
 
     - name: Download ao report
       run: |
@@ -41,5 +48,6 @@ jobs:
     - name: Publish in GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./report
+        name: Cypress Tests
+        path: cypress/reports/**/*.json
+        reporter: mocha-json
