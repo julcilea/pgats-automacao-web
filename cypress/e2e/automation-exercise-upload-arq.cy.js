@@ -40,10 +40,10 @@ describe('Contact Form Tests', () => {
             contactData.message
         )
         ContactPage.uploadFile('cypress/fixtures/test-file.txt')
-        ContactPage.submitForm()
+        ContactPage.submit()
 
         // Verify success message
-        cy.get('.alert-success')
+        ContactPage.getSuccessMessage()
             .should('be.visible')
             .and('contain', 'Success! Your details have been submitted successfully.')
     })
