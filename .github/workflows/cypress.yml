@@ -15,27 +15,31 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Node.js version
-      uses: node --version
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
-    - name: Execute tests
-      run: npx cypress run
+    - name: Cypress run
+      uses: cypress-io/github-action@v6
+      with:
+        browser: chrome
+        headless: true
 
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: cypress-reports
-        path: cypress/reports
+        path: |
+          cypress/reports
+          cypress/screenshots
+          cypress/videos
         retention-days: 30
-
-    - name: Generate test report
-      if: always()
-      run: |
-        npm run test:report || true
 
     - name: Deploy test report
       if: always()
