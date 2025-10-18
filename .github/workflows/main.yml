@@ -30,7 +30,7 @@ jobs:
         mkdir -p cypress/videos
 
     - name: E2E Tests run
-      run: npx cypress run --spec "cypress/e2e/drag-and-drop-and-windows.cy.js"
+      run: npx cypress run --spec "cypress/e2e/automation-exercise-modules.cy.js"
 
     - name: Generate E2E Test Report
       uses: actions/upload-artifact@v4

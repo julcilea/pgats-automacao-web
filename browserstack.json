@@ -1,0 +1,53 @@
+{
+    "auth": {
+        "username": "julcilabolandini_GbFAJg",
+        "access_key": "cGDU5S52FQhpFJQvqqhS"
+    },
+    "browsers": [
+        {
+            "browser": "chrome",
+            "os": "Windows 10",
+            "versions": [
+                "latest",
+                "latest-1"
+            ]
+        },
+        {
+            "browser": "firefox",
+            "os": "Windows 10",
+            "versions": [
+                "latest",
+                "latest-1"
+            ]
+        }
+    ],
+    "run_settings": {
+        "cypress_config_file": "./cypress.config.js",
+        "cypress_version": "13.7.3",
+        "project_name": "pgats-automacao-web",
+        "build_name": "build-name",
+        "exclude": [],
+        "parallels": 1,
+        "npm_dependencies": {
+            "@faker-js/faker": "^10.0.0",
+            "cypress-mochawesome-reporter": "^4.0.2",
+            "cypress-multi-reporters": "^2.0.5",
+            "cypress-xpath": "^2.0.1",
+            "mocha-junit-reporter": "^2.2.1",
+            "mochawesome": "^7.1.4",
+            "mochawesome-merge": "^5.0.0",
+            "mochawesome-report-generator": "^6.3.0"
+        },
+        "auto_import_dev_dependencies": false,
+        "exclude_dependencies": [],
+        "package_config_options": {},
+        "headless": true
+    },
+    "connection_settings": {
+        "local": false,
+        "local_identifier": null,
+        "local_mode": null,
+        "local_config_file": null
+    },
+    "disable_usage_reporting": false
+}
