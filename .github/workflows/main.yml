@@ -23,38 +23,24 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Create reports directory
-      run: |
-        mkdir -p cypress/reports/json
-        mkdir -p cypress/reports/html
-
     - name: E2E Tests run
-      run: |
-        npx cypress run --spec "cypress/e2e/drag-and-drop-and-windows.cy.js" \
-        --reporter cypress-multi-reporters \
-        --reporter-options configFile=reporter-config.json
+      run: npm run test
       continue-on-error: true
 
-    - name: Generate merged report
-      if: always()
+    - name: Generate report files
       run: |
-        npx mochawesome-merge cypress/reports/json/*.json > cypress/reports/mochawesome-final.json
-        npx marge cypress/reports/mochawesome-final.json --reportDir cypress/reports/html --inline
+        npm run merge-reports
+        npm run generate-report
+        npm run zip-report
 
-    - name: Upload test artifacts
-      uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }} 
-      with:
-        name: reports
-        path: |
-          cypress/videos
-          cypress/screenshots
-          cypress/reports
+    - name: Download ao report
+      run: |
+        echo '<p style="text-align:center;margin-top:20px;">
+        <a href="report.zip" download style="background:#0078D4;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;">⬇️ Baixar Relatório</a>
+        </p>' >> report/index.html
 
-    - name: Publish Test Results
-      uses: dorny/test-reporter@v1
-      if: always()
+    - name: Publish in GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        name: Cypress Tests
-        path: cypress/reports/mochawesome-final.json
-        reporter: mocha-json
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./report
