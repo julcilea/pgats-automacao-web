@@ -31,23 +31,15 @@ jobs:
 
     - name: E2E Tests run
       run: npx cypress run --spec "cypress/e2e/drag-and-drop-and-windows.cy.js"
-      continue-on-error: true
 
-    - name: Generate report Mochawesome
-      run: |
-        npx cypress-mochawesome-reporter --reportDir cypress/reports/html
-        cd cypress/reports/html
-        zip -r report.zip .
-
-    - name: Download ao report
-      run: |
-        echo '<p style="text-align:center;margin-top:20px;">
-        <a href="report.zip" download style="background:#0078D4;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;">⬇️ Baixar Relatório</a>
-        </p>' >> report/index.html
+    - name: Generate E2E Test Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }} 
+      with:
+        name: reports
 
     - name: Publish in GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        name: Cypress Tests
-        path: cypress/reports/**/*.json
-        reporter: mocha-json
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./cypress/reports

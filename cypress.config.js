@@ -14,9 +14,6 @@ module.exports = defineConfig({
     inlineAssets: true,
     saveAllAttempts: false,
     reportDir: 'cypress/reports',
-    overwrite: false,
-    html: true,
-    json: true
   },
   e2e: {
     defaultCommandTimeout: 10000,
@@ -24,8 +21,10 @@ module.exports = defineConfig({
     responseTimeout: 30000,
     viewportWidth: 1280,
     viewportHeight: 720,
+    reporter: 'cypress-mochawesome-reporter',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
+      return config;
     },
   },
 });
