@@ -7,21 +7,38 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    environment: github-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm config set legacy-peer-deps true
+          npm ci
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
@@ -42,6 +59,10 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Setup Pages
+        if: always()
+        uses: actions/configure-pages@v4
+
       - name: Deploy Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
@@ -49,4 +70,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: cypress/reports/html
           publish_branch: gh-pages
+          force_orphan: true
           keep_files: true
