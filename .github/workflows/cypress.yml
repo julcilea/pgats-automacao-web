@@ -17,5 +17,5 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Cypress run
+    - name: E2E Tests run
       run: npx cypress run
