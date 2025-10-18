@@ -24,19 +24,22 @@ jobs:
       run: npm install
 
     - name: Create reports directory
-      run: mkdir -p cypress/reports
+      run: |
+        mkdir -p cypress/reports/json
+        mkdir -p cypress/reports/html
 
     - name: E2E Tests run
-      run: npx cypress run --reporter cypress-mochawesome-reporter
+      run: |
+        npx cypress run --spec "cypress/e2e/drag-and-drop-and-windows.cy.js" \
+        --reporter cypress-multi-reporters \
+        --reporter-options configFile=reporter-config.json
       continue-on-error: true
 
-    - name: Merge test reports
+    - name: Generate merged report
       if: always()
-      run: npx mochawesome-merge cypress/reports/*.json > cypress/reports/mochawesome-final.json
-
-    - name: Generate HTML report
-      if: always()
-      run: npx marge cypress/reports/mochawesome-final.json -f report -o cypress/reports
+      run: |
+        npx mochawesome-merge cypress/reports/json/*.json > cypress/reports/mochawesome-final.json
+        npx marge cypress/reports/mochawesome-final.json --reportDir cypress/reports/html --inline
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
