@@ -1,0 +1,47 @@
+name: Web E2E Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Node.js version
+      uses: node --version
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Execute tests
+      run: npx cypress run
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: cypress-reports
+        path: cypress/reports
+        retention-days: 30
+
+    - name: Generate test report
+      if: always()
+      run: |
+        npm run test:report || true
+
+    - name: Deploy test report
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: cypress/reports/html
+        publish_branch: gh-pages
+        keep_files: true
