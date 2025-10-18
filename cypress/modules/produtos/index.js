@@ -41,7 +41,8 @@ class ProductsPage {
     }
 
     viewCart() {
-        cy.get('a[href="/view_cart"]').first().click()
+        // Adiciona force: true para garantir o clique mesmo se houver modal
+        cy.get('a[href="/view_cart"]').first().click({ force: true })
     }
 }
 
