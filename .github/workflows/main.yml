@@ -37,6 +37,11 @@ jobs:
       if: ${{ !cancelled() }} 
       with:
         name: reports
+        path: cypress/reports
+        if-no-files-found: warn
+        compression-level: 6
+        overwrite: false
+        include-hidden-files: false
 
     - name: Publish in GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
