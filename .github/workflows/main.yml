@@ -19,3 +19,13 @@ jobs:
 
     - name: E2E Tests run
       run: npx cypress run
+
+    - name: Generate E2E Test Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }} 
+      with:
+        name: reports
+        path: |
+          cypress/videos
+          cypress/screenshots
+          cypress/reports
