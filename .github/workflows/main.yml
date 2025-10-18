@@ -23,11 +23,22 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Create reports directory
+      run: mkdir -p cypress/reports
+
     - name: E2E Tests run
-      run: npx cypress run --reporter mochawesome --reporter-options "reportDir=cypress/reports,overwrite=false,html=true,json=true"
+      run: npx cypress run --reporter cypress-mochawesome-reporter
       continue-on-error: true
 
-    - name: Generate E2E Test Report
+    - name: Merge test reports
+      if: always()
+      run: npx mochawesome-merge cypress/reports/*.json > cypress/reports/mochawesome-final.json
+
+    - name: Generate HTML report
+      if: always()
+      run: npx marge cypress/reports/mochawesome-final.json -f report -o cypress/reports
+
+    - name: Upload test artifacts
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }} 
       with:
@@ -42,5 +53,5 @@ jobs:
       if: always()
       with:
         name: Cypress Tests
-        path: cypress/reports/mochawesome.json
+        path: cypress/reports/mochawesome-final.json
         reporter: mocha-json
