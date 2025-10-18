@@ -6,13 +6,12 @@ module.exports = defineConfig({
     "runMode": 2,
     "openMode": 0
   },
-  reporter: 'cypress-mochawesome-reporter',
+  reporter: 'mochawesome',
   reporterOptions: {
-    charts: true,
-    reportPageTitle: 'Cypress Test Results',
-    embeddedScreenshots: true,
-    inlineAssets: true,
-    saveAllAttempts: false,
+    reportDir: 'report',
+    overwrite: true,
+    html: true,
+    json: true
   },
   e2e: {
     defaultCommandTimeout: 10000,
@@ -20,8 +19,6 @@ module.exports = defineConfig({
     responseTimeout: 30000,
     viewportWidth: 1280,
     viewportHeight: 720,
-    chromeWebSecurity: false,
-    reporter: 'cypress-mochawesome-reporter',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
     },

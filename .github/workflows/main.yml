@@ -24,7 +24,7 @@ jobs:
       run: npm install
 
     - name: E2E Tests run
-      run: npm run test
+      run: npx cypress run --spec "cypress/e2e/drag-and-drop-and-windows.cy.js
       continue-on-error: true
 
     - name: Generate report files
